@@ -140,14 +140,27 @@ jobs:
 
           **Auto-updates**: This app checks for updates on startup. The \`latest.json\` file is included for the Tauri updater."
 
-          if [ -z "$(find artifacts -type f)" ]; then
-            echo "::error::No files found in artifacts directory"
+          # Collect release assets — exclude .app directories (only ship .dmg for macOS)
+          ASSETS=()
+          while IFS= read -r -d '' f; do
+            ASSETS+=("$f")
+          done < <(find artifacts -type f \
+            -not -path "*/SpendWise.app/*" \
+            -not -name "*.app" \
+            -print0)
+
+          echo "Release assets:"
+          printf '%s\n' "${ASSETS[@]}"
+
+          if [ ${#ASSETS[@]} -eq 0 ]; then
+            echo "::error::No release assets found"
             exit 1
           fi
 
-          find artifacts -type f -print0 | xargs -0 gh release create "${VERSION}" \
+          gh release create "${VERSION}" \
             --title "SpendWise ${VERSION}" \
             --notes "${NOTES}" \
-            --draft
+            --draft \
+            "${ASSETS[@]}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
