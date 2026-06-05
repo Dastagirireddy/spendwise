@@ -44,7 +44,7 @@
   "plugins": {
     "updater": {
       "endpoints": [
-        "https://github.com/OWNER/REPO/releases/latest/download/latest.json"
+        "https://github.com/Dastagirireddy/spendwise/releases/latest/download/latest.json"
       ],
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDQ2N0I1MDBCREY4MTY3QzEKUldUQlo0SGZDMUI3Um9MUjg4dFlPMTNoZzEvSXZIRm5FOHZiQ0h4WjZ4Q3ZGei83ZFVzQ2t3d2EK"
     }
