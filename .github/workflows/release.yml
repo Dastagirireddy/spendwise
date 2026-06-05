@@ -131,18 +131,23 @@ jobs:
         run: find artifacts -type f | sort
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ github.run_number }}
-          name: SpendWise v${{ github.run_number }}
-          body: |
-            ## SpendWise v${{ github.run_number }}
+        run: |
+          set -e
+          VERSION="v${{ github.run_number }}"
+          NOTES="## SpendWise ${VERSION}
 
-            Download the installer for your platform below.
+          Download the installer for your platform below.
 
-            **Auto-updates**: This app checks for updates on startup. The `latest.json` file is included for the Tauri updater.
-          draft: true
-          prerelease: false
-          files: artifacts/**/*
+          **Auto-updates**: This app checks for updates on startup. The \`latest.json\` file is included for the Tauri updater."
+
+          if [ -z "$(find artifacts -type f)" ]; then
+            echo "::error::No files found in artifacts directory"
+            exit 1
+          fi
+
+          find artifacts -type f -print0 | xargs -0 gh release create "${VERSION}" \
+            --title "SpendWise ${VERSION}" \
+            --notes "${NOTES}" \
+            --draft
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
