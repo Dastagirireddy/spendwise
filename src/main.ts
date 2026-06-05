@@ -6,7 +6,9 @@ import { renderReports } from './components/reports';
 import { seedTestData, getExpenseCount, getProfiles, addProfile, switchProfile, getActiveProfileId } from './db';
 import { checkForUpdates } from './updater';
 
-(window as any).seedTestData = seedTestData;
+if (import.meta.env.DEV) {
+  (window as any).seedTestData = seedTestData;
+}
 
 async function autoSeedIfNeeded(): Promise<void> {
   try {
@@ -151,7 +153,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  await autoSeedIfNeeded();
+  if (import.meta.env.DEV) {
+    await autoSeedIfNeeded();
+  }
   await initProfileSwitcher();
 
   // Check for updates silently on startup (non-blocking)
