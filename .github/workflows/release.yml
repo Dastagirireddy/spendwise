@@ -76,26 +76,6 @@ jobs:
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
 
-      - name: Install create-dmg (macOS)
-        if: matrix.platform == 'macos-latest'
-        run: brew install create-dmg
-
-      - name: Create .dmg (macOS)
-        if: matrix.platform == 'macos-latest'
-        run: |
-          VERSION=$(jq -r .version src-tauri/tauri.conf.json)
-          APP_PATH="src-tauri/target/${{ matrix.target }}/release/bundle/macos/SpendWise.app"
-          create-dmg \
-            --volname "SpendWise Installer" \
-            --window-pos 200 120 \
-            --window-size 800 400 \
-            --icon-size 100 \
-            --icon "SpendWise.app" 200 190 \
-            --app-drop-link 600 185 \
-            --no-internet-enable \
-            "SpendWise_${VERSION}_${{ matrix.arch }}.dmg" \
-            "${APP_PATH}"
-
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
