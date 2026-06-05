@@ -140,13 +140,15 @@ jobs:
 
           **Auto-updates**: This app checks for updates on startup. The \`latest.json\` file is included for the Tauri updater."
 
-          # Collect release assets — exclude .app directories (only ship .dmg for macOS)
+          # Collect release assets — exclude .app dirs and .app.tar.gz (only ship .dmg for macOS)
           ASSETS=()
           while IFS= read -r -d '' f; do
             ASSETS+=("$f")
           done < <(find artifacts -type f \
             -not -path "*/SpendWise.app/*" \
             -not -name "*.app" \
+            -not -name "*.app.tar.gz" \
+            -not -name "*.app.tar.gz.sig" \
             -print0)
 
           echo "Release assets:"
