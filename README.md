@@ -102,7 +102,7 @@ flowchart TD
         F3 --> G
 
         G --> H[find files — exclude .app dirs]
-        H --> I[gh release create v{run_number} --draft]
+        H --> I["gh release create vN --draft"]
         I --> J[Upload assets to release]
     end
 
