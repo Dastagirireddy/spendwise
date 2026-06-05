@@ -16,25 +16,21 @@ jobs:
       matrix:
         include:
           - platform: 'macos-latest'
-            args: '--target aarch64-apple-darwin'
+            args: ''
             artifact_name: 'macos-arm64'
             target: 'aarch64-apple-darwin'
-            arch: 'aarch64'
-          - platform: 'macos-latest'
+          - platform: 'macos-13'
             args: '--target x86_64-apple-darwin'
             artifact_name: 'macos-x64'
             target: 'x86_64-apple-darwin'
-            arch: 'x64'
           - platform: 'ubuntu-22.04'
             args: ''
             artifact_name: 'linux-x64'
             target: ''
-            arch: ''
           - platform: 'windows-latest'
             args: ''
             artifact_name: 'windows-x64'
             target: ''
-            arch: ''
 
     runs-on: ${{ matrix.platform }}
 
@@ -61,7 +57,7 @@ jobs:
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+          targets: ${{ matrix.target }}
 
       - name: Rust cache
         uses: swatinem/rust-cache@v2
@@ -82,8 +78,6 @@ jobs:
           name: ${{ matrix.artifact_name }}
           path: |
             src-tauri/target/**/release/bundle/**/*.dmg
-            src-tauri/target/**/release/bundle/**/*.app
-            src-tauri/target/**/release/bundle/**/*.app.tar.gz
             src-tauri/target/**/release/bundle/**/*.exe
             src-tauri/target/**/release/bundle/**/*.msi
             src-tauri/target/**/release/bundle/**/*.AppImage
@@ -115,7 +109,6 @@ jobs:
           set -e
           VERSION="v${{ github.run_number }}"
 
-          # Collect release assets — exclude .app dirs and .app.tar.gz (only ship .dmg for macOS)
           ASSETS=()
           while IFS= read -r -d '' f; do
             ASSETS+=("$f")
